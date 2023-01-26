@@ -72,4 +72,5 @@ public class ServiceResult<T> {
         data.addAll(data);
         return this;
     }
+
 }

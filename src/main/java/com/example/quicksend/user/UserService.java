@@ -1,7 +1,8 @@
-package com.example.quicksend.User;
+package com.example.quicksend.user;
 
 import com.example.quicksend.util.dto.ServiceResult;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -25,25 +26,37 @@ public class UserService {
         this.result = userDTO;
     }
 
-    public ServiceResult<UserDTO> registerUser(User user) {
+    public ServiceResult<UserDTO> registerUser(UserDTO user) {
         try {
             // check if user email exists
             if(userRepository.existsUserByEmail(user.getEmail())) {
-                return result.setStatus(HttpStatus.CONFLICT).setMessage("Email address already exists");
+                return result.setStatus(HttpStatus.CONFLICT).setMessage("email address %s already exists".formatted(user.getEmail()));
             }
-            // save user to database
-            UserDTO savedUser = modelMapper.map(userRepository.save(user), UserDTO.class);
-            return result.setStatus(HttpStatus.CREATED).setMessage("User successfully registered").setData(savedUser);
+            // register user and save to db
+            User newUser = new User(user.getFirstName(), user.getLastName(), user.getEmail(), user.getPassword(),
+                    user.getPhoneNumber(), user.getAddress(), user.getCity(), user.getCountry(),
+                    user.getPostalCode(), user.getDob());
+            userRepository.save(newUser);
+            return result.setStatus(HttpStatus.CREATED).setMessage("user successfully registered");
         } catch (Exception e) {
             return result.setStatus(HttpStatus.INTERNAL_SERVER_ERROR).setMessage(e.getMessage());
         }
     }
 
-    public ServiceResult<UserDTO> updateUser(User user) {
+    /**
+     *
+     * @param userID
+     * @param updateRequest
+     * @return updated user
+     */
+    public ServiceResult<UserDTO> updateUser(Long userID, UserDTO updateRequest) {
         try {
-            if(!userRepository.existsUserByEmail(user.getEmail())) {
-                return result.setStatus(HttpStatus.NOT_FOUND).setMessage("User does not exist");
+            User user = userRepository.findUserById(userID).get();
+            if(user == null) {
+                return result.setStatus(HttpStatus.NOT_FOUND).setMessage("user does not exist");
             }
+            updateRequest.setId(userID); // In case this was not set, in order for BeanUtils to copy properly
+            BeanUtils.copyProperties(updateRequest, user);
             UserDTO savedUser = modelMapper.map(userRepository.save(user), UserDTO.class);
             return result.setStatus(HttpStatus.OK).setMessage("user successfully saved").setData(savedUser);
         } catch (Exception e) {
@@ -51,12 +64,17 @@ public class UserService {
         }
     }
 
+    /**
+     *
+     * @param id
+     * @return
+     */
     public ServiceResult<UserDTO> getUser(Long id) {
         try {
             Optional<User> user = userRepository.findUserById(id);
             // check if user exists
-            if(!user.isPresent()) {
-                return result.setStatus(HttpStatus.NOT_FOUND).setMessage("User does not exist");
+            if(user.isEmpty()) {
+                return result.setStatus(HttpStatus.NOT_FOUND).setMessage("user does not exist");
             }
             // return retrieved user
             UserDTO returnedUser = modelMapper.map(user.get(), UserDTO.class);
@@ -66,6 +84,10 @@ public class UserService {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public ServiceResult<UserDTO> getAllUsers() {
         try {
             List<UserDTO> userList = userRepository.findAll().stream()

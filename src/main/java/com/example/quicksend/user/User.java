@@ -1,4 +1,4 @@
-package com.example.quicksend.User;
+package com.example.quicksend.user;
 
 
 import jakarta.persistence.*;
@@ -137,7 +137,13 @@ public class User {
         this.age = LocalDate.now().getYear() - this.dob.getYear();
     }
 
+    public String getPassword() {
+        return password;
+    }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -154,7 +160,7 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
+        return "user{" +
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +

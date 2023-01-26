@@ -1,4 +1,4 @@
-package com.example.quicksend.User;
+package com.example.quicksend.user;
 
 import lombok.Data;
 
