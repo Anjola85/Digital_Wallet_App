@@ -1,0 +1,35 @@
+version: "1.0"
+services:
+  database:
+    image: postgres
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=quicksend
+    restart: unless-stopped
+#  server:
+#    build:
+#      context: ./learningoop-backend
+#      dockerfile: Dockerfile
+#    restart: on-failure
+#    image: woda/server-dev:latest
+#    ports:
+#      - "8080:8080"
+#    environment:
+#      - "SPRING_PROFILES_ACTIVE=dev"
+#    depends_on:
+#      - database
+#  client:
+#    build:
+#      context: ./woda
+#      dockerfile: Dockerfile
+#    command: yarn start:dev
+#    volumes:
+#      - ./woda:/app
+#      - /app/node_modules
+#    restart: on-failure
+#    image: woda/client:latest
+#    ports:
+#      - "4200:4200"
