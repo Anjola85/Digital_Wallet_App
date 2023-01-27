@@ -12,7 +12,7 @@ services:
 #  server:
 #    build:
 #      context: ./learningoop-backend
-#      dockerfile: Dockerfile
+#      dockerfile: Dockertfile
 #    restart: on-failure
 #    image: woda/server-dev:latest
 #    ports:

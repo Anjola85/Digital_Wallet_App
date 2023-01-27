@@ -1,7 +1,9 @@
 package com.example.quicksend.user;
 
+import com.example.quicksend.util.dto.ServiceResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.quicksend.util.helper.handleControllerResult;
@@ -16,6 +18,11 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
         this.result = new handleControllerResult();
+    }
+
+    @GetMapping
+    public ResponseEntity<?> hello() {
+        return ResponseEntity.ok().body("Welcome to the user api home!");
     }
 
     /**

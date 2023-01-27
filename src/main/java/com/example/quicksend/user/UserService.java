@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -31,13 +32,15 @@ public class UserService {
             // check if user email exists
             if(userRepository.existsUserByEmail(user.getEmail())) {
                 return result.setStatus(HttpStatus.CONFLICT).setMessage("email address %s already exists".formatted(user.getEmail()));
+            } else if(userRepository.existsUserByPhoneNumber(user.getPhoneNumber())) {
+                return result.setStatus(HttpStatus.CONFLICT).setMessage("phone number %s already exists".formatted(user.getPhoneNumber()));
             }
             // register user and save to db
             User newUser = new User(user.getFirstName(), user.getLastName(), user.getEmail(), user.getPassword(),
                     user.getPhoneNumber(), user.getAddress(), user.getCity(), user.getCountry(),
                     user.getPostalCode(), user.getDob());
-            userRepository.save(newUser);
-            return result.setStatus(HttpStatus.CREATED).setMessage("user successfully registered");
+            UserDTO savedUser = modelMapper.map(userRepository.save(newUser), UserDTO.class); // convert newUser back to DTO
+            return result.setStatus(HttpStatus.CREATED).setMessage("user successfully registered").setData(savedUser);
         } catch (Exception e) {
             return result.setStatus(HttpStatus.INTERNAL_SERVER_ERROR).setMessage(e.getMessage());
         }
@@ -56,8 +59,8 @@ public class UserService {
                 return result.setStatus(HttpStatus.NOT_FOUND).setMessage("user does not exist");
             }
             updateRequest.setId(userID); // In case this was not set, in order for BeanUtils to copy properly
-            BeanUtils.copyProperties(updateRequest, user);
-            UserDTO savedUser = modelMapper.map(userRepository.save(user), UserDTO.class);
+            BeanUtils.copyProperties(updateRequest, user); // copy updated properties from updateRequest into user
+            UserDTO savedUser = modelMapper.map(userRepository.save(user), UserDTO.class); // convert the user object returned by userRepository to UserDTO
             return result.setStatus(HttpStatus.OK).setMessage("user successfully saved").setData(savedUser);
         } catch (Exception e) {
             return result.setStatus(HttpStatus.INTERNAL_SERVER_ERROR).setMessage(e.getMessage());

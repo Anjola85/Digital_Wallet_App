@@ -1,5 +1,6 @@
 package com.example.quicksend.util.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 
@@ -10,9 +11,13 @@ import java.util.List;
 // used annotation in order to be able to pass this class as a param in service class
 @Configuration
 public class ServiceResult<T> {
+    @JsonProperty("status")
     private HttpStatus status = null;
+
+    @JsonProperty("message")
     private String message = null;
 
+    @JsonProperty("data")
     private List<T> data = null;
 
     public ServiceResult() {}
@@ -56,12 +61,11 @@ public class ServiceResult<T> {
      * @return
      */
     public ServiceResult<T> setData(T data) {
-        if(data == null) {
-            this.data = new ArrayList<T>();
-        }
+        this.data = new ArrayList<T>();
         this.data.add(data);
         return this;
     }
+
 
     /**
      * Accepts a list of data
@@ -69,7 +73,8 @@ public class ServiceResult<T> {
      * @return
      */
     public ServiceResult<T> setData(List<T> data) {
-        data.addAll(data);
+        this.data = new ArrayList<T>();
+        this.data.addAll(data);
         return this;
     }
 
