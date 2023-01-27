@@ -8,7 +8,7 @@ import java.time.LocalDate;
 @Data
 public class UserDTO{
     @JsonProperty("id")
-    private Long id;
+    private long id;
     @JsonProperty("age")
     private Integer age;
     @JsonProperty("firstName")

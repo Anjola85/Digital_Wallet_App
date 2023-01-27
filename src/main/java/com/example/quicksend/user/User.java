@@ -1,27 +1,44 @@
 package com.example.quicksend.user;
-
-
 import jakarta.persistence.*;
-
 import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity(name="users")
 @Table(uniqueConstraints = { @UniqueConstraint(name = "UniqueEmailAndPhone", columnNames = { "phoneNumber", "email" }) })
 public class User {
-
     @Id
     @SequenceGenerator(name="user_id_sequence", sequenceName = "user_id_sequence", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_sequence")
-
     private Long id;
 
+    @Column
     private Integer age;
-    private String firstName, lastName, password, phoneNumber, address, city, country, postalCode, email;
+    @Column
+    private String firstName;
+    @Column
+    private String lastName;
+    @Column
+    private String password;
+    @Column
+    private String phoneNumber;
+    @Column
+    private String address;
+    @Column
+    private String city;
+    @Column
+    private String country;
+    @Column
+    private String postalCode;
+    @Column
+    private String email;
+    @Column
     private LocalDate dob;
 
     public User() {}
-    public User(Long id, String firstName, String lastName, String email, String password, String phoneNumber, String address, String city, String country, String postalCode, LocalDate dob) {
+
+    public User(Long id, String firstName, String lastName, String email,
+                String password, String phoneNumber, String address, String city,
+                String country, String postalCode, LocalDate dob) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -36,7 +53,8 @@ public class User {
         setAge();
     }
 
-    public User(String firstName, String lastName, String email, String password, String phoneNumber, String address, String city, String country, String postalCode, LocalDate dob) {
+    public User(String firstName, String lastName, String email, String password,
+                String phoneNumber, String address, String city, String country, String postalCode, LocalDate dob) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -47,6 +65,7 @@ public class User {
         this.country = country;
         this.postalCode = postalCode;
         this.dob = dob;
+        setAge();
     }
 
     public Long getId() {
@@ -125,16 +144,18 @@ public class User {
         return dob;
     }
 
-    public void setDob(LocalDate dob) {
+    public User setDob(LocalDate dob) {
         this.dob = dob;
+        return this;
     }
 
     public Integer getAge() {
         return age;
     }
 
-    public void setAge() {
+    public User setAge() {
         this.age = LocalDate.now().getYear() - this.dob.getYear();
+        return this;
     }
 
     public String getPassword() {

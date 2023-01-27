@@ -31,7 +31,7 @@ public class UserController {
      */
     @GetMapping("/all-users")
     public ResponseEntity<?>  getUsers() {
-        return result.handleResult(userService.getAllUsers());
+        return result.handleResult(userService.findAll());
     }
 
     /**
@@ -41,7 +41,7 @@ public class UserController {
      */
     @GetMapping("{userId}")
     public ResponseEntity<?>  getUser(@PathVariable("userId") Long userId) {
-        return result.handleResult(userService.getUser(userId));
+        return result.handleResult(userService.findById(userId));
     }
 
     /**
@@ -50,8 +50,8 @@ public class UserController {
      */
     @PostMapping("/register-user")
     public  ResponseEntity<?> registerUser(@RequestBody UserDTO newUser) {
-        // TODO: JWT implementation goes here, add jwtToken and HrrpHeaders.Auth to header
-        return result.handleUserRegistration(userService.registerUser(newUser), HttpHeaders.AUTHORIZATION, "");
+        // TODO: JWT implementation goes here, add jwtToken and HttpHeaders.Auth to header
+        return result.handleUserRegistration(userService.create(newUser), HttpHeaders.AUTHORIZATION, "");
     }
 
     /**
@@ -62,7 +62,7 @@ public class UserController {
      */
     @PutMapping("update/{userId}")
     public ResponseEntity<?> updateUser(@PathVariable("userId") Long userId, @RequestBody UserDTO updateRequest) {
-        return result.handleResult(userService.updateUser(userId, updateRequest));
+        return result.handleResult(userService.update(userId, updateRequest));
     }
 
 }
