@@ -20,7 +20,7 @@ public class handleControllerResult<T> {
     }
 
     /**
-     * @precondition - result.getData() cannot be null
+     * Handles the response of the api in the controller
      * @param result
      * @return
      */

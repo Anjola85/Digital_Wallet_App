@@ -4,9 +4,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-interface WalletRepository extends JpaRepository<Wallet, Long> {
+public interface WalletRepository extends JpaRepository<Wallet, Long> {
     boolean existsWalletByUserId(Long id);
     boolean existsWalletById(Long id);
     Optional<Wallet> findWalletByUserId(Long id);
     Optional<Wallet> findWalletById(Long id);
+
+    boolean existsByCardNumber(String cardNumber);
+
+    boolean existsByCvc(String cvc);
 }

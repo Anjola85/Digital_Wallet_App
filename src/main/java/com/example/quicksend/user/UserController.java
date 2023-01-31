@@ -1,5 +1,6 @@
 package com.example.quicksend.user;
 
+import com.example.quicksend.config.BaseController;
 import com.example.quicksend.util.dto.ServiceResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -10,14 +11,14 @@ import com.example.quicksend.util.helper.handleControllerResult;
 
 @RestController
 @RequestMapping("/api/user")
-public class UserController {
+public class UserController implements BaseController<UserDTO>{
     private final UserService userService;
-    private final handleControllerResult result;
+    private final handleControllerResult<UserDTO> result;
 
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
-        this.result = new handleControllerResult();
+        this.result = new handleControllerResult<>();
     }
 
     @GetMapping
@@ -26,30 +27,11 @@ public class UserController {
     }
 
     /**
-     *
-     * @return all registered users in the database
-     */
-    @GetMapping("/all-users")
-    public ResponseEntity<?>  getUsers() {
-        return result.handleResult(userService.findAll());
-    }
-
-    /**
-     * Gets one user by Id
-     * @param userId - provided userId
-     * @return user data
-     */
-    @GetMapping("{userId}")
-    public ResponseEntity<?>  getUser(@PathVariable("userId") Long userId) {
-        return result.handleResult(userService.findById(userId));
-    }
-
-    /**
      * TODO: remember to add JWT
      * @return message - success or failed
      */
     @PostMapping("/register-user")
-    public  ResponseEntity<?> registerUser(@RequestBody UserDTO newUser) {
+    public ResponseEntity<?> create(@RequestBody UserDTO newUser) {
         // TODO: JWT implementation goes here, add jwtToken and HttpHeaders.Auth to header
         return result.handleUserRegistration(userService.create(newUser), HttpHeaders.AUTHORIZATION, "");
     }
@@ -61,8 +43,26 @@ public class UserController {
      * @return
      */
     @PutMapping("update/{userId}")
-    public ResponseEntity<?> updateUser(@PathVariable("userId") Long userId, @RequestBody UserDTO updateRequest) {
+    public ResponseEntity<?> update(@PathVariable("userId") Long userId, @RequestBody UserDTO updateRequest) {
         return result.handleResult(userService.update(userId, updateRequest));
     }
 
+    /**
+     *
+     * @return all registered users in the database
+     */
+    @GetMapping("/all-users")
+    public ResponseEntity<?>  findAll() {
+        return result.handleResult(userService.findAll());
+    }
+
+    /**
+     * Gets one user by Id
+     * @param userId - provided userId
+     * @return user data
+     */
+    @GetMapping("{userId}")
+    public ResponseEntity<?>  findById(@PathVariable("userId") Long userId) {
+        return result.handleResult(userService.findById(userId));
+    }
 }

@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 
 import java.sql.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 // used annotation in order to be able to pass this class as a param in service class
